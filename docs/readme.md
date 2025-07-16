@@ -23,13 +23,20 @@
         - [Esquema Detallado](#esquema-detallado)
           - [Colección de Temporadas (*seasons*)](#colección-de-temporadas-seasons)
           - [Colección de Constructores (equipos o escudería) (*constructors*)](#colección-de-constructores-equipos-o-escudería-constructors)
-        - [Colección de Pilotos (*drivers*)](#colección-de-pilotos-drivers)
+          - [Colección de Pilotos (*drivers*)](#colección-de-pilotos-drivers)
+      - [Diagramas](#diagramas)
+          - [Colección de Temporadas (*seasons*)](#colección-de-temporadas-seasons-1)
+          - [Colección de Constructores (equipos o escudería) (*constructors*)](#colección-de-constructores-equipos-o-escudería-constructors-1)
+          - [Colección de Pilotos (*drivers*)](#colección-de-pilotos-drivers-1)
       - [Justificación](#justificación)
-      - [Visualización](#visualización)
     - [Scripts de Python](#scripts-de-python)
       - [Pre-requisitos](#pre-requisitos)
       - [Script](#script)
       - [Capturas](#capturas)
+      - [Métodos para consultas](#métodos-para-consultas)
+        - [Temporada](#temporada)
+        - [Constructor (Escudería)](#constructor-escudería)
+        - [Piloto (Conductor)](#piloto-conductor)
 
 
 ## Introducción
@@ -94,61 +101,61 @@ El esquema propuesto utiliza 3 colecciones principales para la base de datos, br
     url: String,
     races: [
         {
-        raceId: Number,
-        round: Number,
-        circuit: {
-            circuitId: Number,
-            name: String,
-            location: String,
-            country: String,
-            lat: Number,
-            lng: Number
-        },
-        date: String,
-        time: String,
-        results: [
-            {
-                driverId: Number,
-                constructorId: Number,
-                position: String,
-                points: Number,
-                laps: Number,
-                fastestLapTime: String,
-                status: String
-            }
-        ],
-        qualifying: [
-            {
-                driverId: Number,
-                constructorId: Number,
-                position: Number,
-                q1: String,
-                q2: String,
-                q3: String
-            }
-        ],
-        sprint_results: [
-            {
-                driverId: Number,
-                constructorId: Number,
-                position: String,
-                points: Number
-            }
-        ],
-        pit_stops: [
-            {
-                driverId: Number,
-                lap: Number,
-                duration: String
-            }
-        ],
-        lap_times: [
-            {
-                driverId: Number,
-                lap: Number,
-                time: String
-            }
-        ]
+            raceId: Number,
+            round: Number,
+            circuit: {
+                circuitId: Number,
+                name: String,
+                location: String,
+                country: String,
+                lat: Number,
+                lng: Number
+            },
+            date: String,
+            time: String,
+            results: [
+                {
+                    driverId: Number,
+                    constructorId: Number,
+                    position: String,
+                    points: Number,
+                    laps: Number,
+                    fastestLapTime: String,
+                    status: String
+                }
+            ],
+            qualifying: [
+                {
+                    driverId: Number,
+                    constructorId: Number,
+                    position: Number,
+                    q1: String,
+                    q2: String,
+                    q3: String
+                }
+            ],
+            sprint_results: [
+                {
+                    driverId: Number,
+                    constructorId: Number,
+                    position: String,
+                    points: Number
+                }
+            ],
+            pit_stops: [
+                {
+                    driverId: Number,
+                    lap: Number,
+                    duration: String
+                }
+            ],
+            lap_times: [
+                {
+                    driverId: Number,
+                    lap: Number,
+                    time: String
+                }
+            ]
         }
     ]
 }
@@ -164,27 +171,27 @@ El esquema propuesto utiliza 3 colecciones principales para la base de datos, br
     url: String,
     seasons: [
         {
-        year: Number,
-        races: [
-            {
-                raceId: Number,
-                points: Number,
-                position: String,
-                drivers: [
-                    {
-                        driverId: Number,
-                        position: String,
-                        points: Number
-                    }
-                ]
-            }
-        ]
+            year: Number,
+            races: [
+                {
+                    raceId: Number,
+                    points: Number,
+                    position: String,
+                    drivers: [
+                        {
+                            driverId: Number,
+                            position: String,
+                            points: Number
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
 ```
 
-##### Colección de Pilotos (*drivers*) 
+###### Colección de Pilotos (*drivers*) 
 
 ```javascript
 {
@@ -197,132 +204,146 @@ El esquema propuesto utiliza 3 colecciones principales para la base de datos, br
     url: String,
     seasons: [
         {
-        year: Number,
-        races: [
-            {
-                raceId: Number,
-                constructorId: Number,
-                position: String,
-                points: Number,
-                fastestLapTime: String
-            }
-        ]
+            year: Number,
+            races: [
+                {
+                    raceId: Number,
+                    constructorId: Number,
+                    position: String,
+                    points: Number,
+                    fastestLapTime: String
+                }
+            ]
         }
     ]
 }
 ```
 
+#### Diagramas
+
+###### Colección de Temporadas (*seasons*)
+```Mermaid
+flowchart TD
+    subgraph ROOT["Temporadas"]
+        year["year : Number"]
+        url["url  : String"]
+
+        subgraph races_array["Carreras"]
+            raceId["raceId : Number"]
+            round["round  : Number"]
+            date["date   : String"]
+            time["time   : String"]
+
+            subgraph CIRCUIT["Circuitos"]
+                circuitId["circuitId : Number"]
+                name["name      : String"]
+                location["location : String"]
+                country["country  : String"]
+                lat["lat : Number"]
+                lng["lng : Number"]
+            end
+
+            subgraph RESULTS["Resultados"]
+                driverId_r["driverId       : Number"]
+                constructorId_r["constructorId : Number"]
+                position_r["position       : String"]
+                points_r["points         : Number"]
+                laps_r["laps           : Number"]
+                fastestLapTime["fastestLapTime : String"]
+                status_r["status         : String"]
+            end
+
+            subgraph QUALI["Participantes"]
+                driverId_q["driverId       : Number"]
+                constructorId_q["constructorId : Number"]
+                position_q["position       : Number"]
+                q1["q1 : String"]
+                q2["q2 : String"]
+                q3["q3 : String"]
+            end
+
+            subgraph SPRINT["Resultados del Sprint"]
+                driverId_s["driverId       : Number"]
+                constructorId_s["constructorId : Number"]
+                position_s["position       : String"]
+                points_s["points         : Number"]
+            end
+
+            subgraph PITS["Paradas de Pits"]
+                driverId_p["driverId : Number"]
+                lap_p["lap      : Number"]
+                duration_p["duration : String"]
+            end
+
+            subgraph LAPS["Tiempos de Vuelta"]
+                driverId_l["driverId : Number"]
+                lap_l["lap      : Number"]
+                time_l["time     : String"]
+            end
+        end
+    end
+
+```
+
+###### Colección de Constructores (equipos o escudería) (*constructors*) 
+
+```Mermaid
+flowchart TD
+    subgraph ROOT["Constructor"]
+        constructorId["constructorId : Number"]
+        name["name         : String"]
+        nationality["nationality  : String"]
+        url["url          : String"]
+
+        subgraph SEASONS_ARRAY["Temporadas"]
+            year["year : Number"]
+
+            subgraph RACES_ARRAY["Carreras"]
+                raceId["raceId  : Number"]
+                points_r["points  : Number"]
+                position_r["position : String"]
+
+                subgraph DRIVERS_ARRAY["Pilotos"]
+                    driverId["driverId : Number"]
+                    position_d["position : String"]
+                    points_d["points   : Number"]
+                end
+            end
+        end
+    end
+```
+###### Colección de Pilotos (*drivers*) 
+
+```Mermaid
+flowchart TD
+    subgraph ROOT["Pilotos"]
+        driverId["driverId       : Number"]
+        code["code            : String"]
+        forename["forename        : String"]
+        surname["surname         : String"]
+        dob["dob             : String"]
+        nationality["nationality    : String"]
+        url["url             : String"]
+
+        subgraph SEASONS_ARRAY["Temporadas"]
+            year["year : Number"]
+
+            subgraph RACES_ARRAY["Carreras"]
+                raceId["raceId        : Number"]
+                constructorId["constructorId : Number"]
+                position_r["position      : String"]
+                points_r["points        : Number"]
+                fastestLapTime["fastestLapTime : String"]
+            end
+        end
+    end
+```
+
+
 #### Justificación
 - **Desnormalización:** Insertar resultados de las carreras, tiempos de llegada y datos del circuito dentro de las temporadas reduce la necesidad para consultas entre colecciones.
 - **Flexibilidad:** Separar colecciones por constructores y pilotos permiten consultas más eficientes.
 - **Escalabilidad:** La estructura soporta datasets de gran tamaño mientras se mantiene rendimiento en las consultas.
-
-#### Visualización
-```mermaid
-erDiagram
-    SEASONS ||--o{ RACES : contiene
-    SEASONS {
-        number year
-        string url
-        array races
-    }
-    RACES {
-        number raceId
-        number round
-        object circuit
-        string date
-        string time
-        array results
-        array qualifying
-        array sprint_results
-        array pit_stops
-        array lap_times
-    }
-    RACES ||--o{ RESULTS : contiene
-    RESULTS {
-        number driverId
-        number constructorId
-        string position
-        number points
-        number laps
-        string fastestLapTime
-        string status
-    }
-    CONSTRUCTORS ||--o{ SEASONS_CON : contiene
-    CONSTRUCTORS {
-        number constructorId
-        string name
-        string nationality
-        string url
-        array seasons
-    }
-    SEASONS_CON {
-        number year
-        array races
-    }
-    SEASONS_CON ||--o{ RACES_CON : contiene
-    RACES_CON {
-        number raceId
-        number points
-        string position
-        array drivers
-    }
-    DRIVERS ||--o{ SEASONS_DRV : contiene
-    DRIVERS {
-        number driverId
-        string code
-        string forename
-        string surname
-        string dob
-        string nationality
-        string url
-        array seasons
-    }
-    SEASONS_DRV {
-        number year
-        array races
-    }
-    SEASONS_DRV ||--o{ RACES_DRV : contiene
-    RACES_DRV {
-        number raceId
-        number constructorId
-        string position
-        number points
-        string fastestLapTime
-    }
-    RACES ||--o{ QUALIFYING : contiene
-    QUALIFYING {
-        number driverId
-        number constructorId
-        number position
-        string q1
-        string q2
-        string q3
-    }
-    RACES ||--o{ SPRINT_RESULTS : contiene
-    SPRINT_RESULTS {
-        number driverId
-        number constructorId
-        string position
-        number points
-    }
-    RACES ||--o{ PIT_STOPS : contiene
-    PIT_STOPS {
-        number driverId
-        number lap
-        string duration
-    }
-    RACES ||--o{ LAP_TIMES : contiene
-    LAP_TIMES {
-        number driverId
-        number lap
-        string time
-    }
-    RESULTS ||--o{ DRIVERS : referencia
-    RESULTS ||--o{ CONSTRUCTORS : referencia
-    RACES_CON ||--o{ DRIVERS : referencia
-    RACES_DRV ||--o{ CONSTRUCTORS : referencia
-```
 
 ### Scripts de Python
 #### Pre-requisitos
@@ -351,3 +372,112 @@ Inicio de ejecución del Script
 
 Final de ejecución del Script
 ![End](img/time-script-end.png)
+
+#### Métodos para consultas
+
+##### Temporada
+```javascript
+function getSeasonInfo(year) {
+    const season = db.seasons.findOne({ year: year });
+    if (!season) {
+    print(`No se encontraron datos para la temporada ${year}`);
+    return;
+    }
+
+    print(`Temporada: ${season.year}`);
+    season.races.forEach(race => {
+        print(`    Carrera: ${race.name} (Ronda ${race.round})`);
+        print(`    Circuito: ${race.circuit.name}, ${race.circuit.location}, ${race.circuit.country}`);
+        print("    Resultados:");
+        race.results.forEach(result => {
+            const driver = db.drivers.findOne({ driverId: result.driverId });
+            const constructor = db.constructors.findOne({ constructorId: result.constructorId });
+            const status = db.status.findOne({ statusId: result.statusId });
+            print(`        ${result.position || 'DNF'}: ${driver.forename} ${driver.surname}`);
+            print(`            Constructor: (${constructor.name})`);
+            print(`            Puntos: (${result.points})`);
+            print(`            Estatus: ${status ? status.status : 'Desconocido'}`);
+        });
+        print("    Participantes:");
+        race.qualifying.forEach(qual => {
+            const driver = db.drivers.findOne({ driverId: qual.driverId });
+            print(`        ${qual.position}: ${driver.forename}`);
+            print(`            Q1: ${qual.q1 || 'N/A'}`);
+            print(`            Q2: ${qual.q2 || 'N/A'}`);
+            print(`            Q3: ${qual.q3 || 'N/A'}`);
+        });
+        if (race.sprint_results.length > 0) {
+            print("    Resultados del Sprint:");
+            race.sprint_results.forEach(sprint => {
+                const driver = db.drivers.findOne({ driverId: sprint.driverId });
+                print(`  ${sprint.position}: ${driver.forename} ${driver.surname} - ${sprint.points} puntos`);
+            });
+        }
+    });
+}
+
+getSeasonInfo(2024);
+```
+
+![Script 1](img/datagrip-script1.png)
+
+##### Constructor (Escudería)
+```javascript
+function getConstructorInfo(constructorName) {
+    const constructor = db.constructors.findOne({ name: constructorName });
+    if (!constructor) {
+        print(`No se encontraron datos para el constructores ${constructorName}`);
+        return;
+    }
+
+    print(`Constructor: ${constructor.name} (${constructor.nationality})`);
+    constructor.seasons.forEach(season => {
+        print(`    Temporada: ${season.year}`);
+        season.races.forEach(race => {
+            const raceDetails = db.seasons.findOne({ "races.raceId": race.raceId }, { "races.$": 1 });
+            print(`        Carrera: ${raceDetails.races[0].name}`);
+            print(`            Puntos: ${race.points}`);
+            print(`            Posición: ${race.position || 'N/A'}`);
+            print("            Pilotos:");
+            race.drivers.forEach(driver => {
+                const driverDetails = db.drivers.findOne({ driverId: driver.driverId });
+                print(`                - ${driverDetails.forename} ${driverDetails.surname}`);
+                print(`                    Posición: ${driver.position || 'DNF'} - ${driver.points} puntos`);
+            });
+        });
+    });
+}
+
+getConstructorInfo("McLaren");
+```
+
+![Script 2](img/datagrip-script2.png)
+
+##### Piloto (Conductor)
+```javascript
+function getDriverInfo(driverSurname) {
+    const driver = db.drivers.findOne({ surname: driverSurname });
+    if (!driver) {
+        print(`No se encontraron datos para el piloto ${driverSurname}`);
+        return;
+    }
+
+    print(`Piloto: ${driver.forename} ${driver.surname} (${driver.nationality})`);
+    driver.seasons.forEach(season => {
+        print(`    Temporada: ${season.year}`);
+        season.races.forEach(race => {
+            const raceDetails = db.seasons.findOne({ "races.raceId": race.raceId }, { "races.$": 1 });
+            const constructor = db.constructors.findOne({ constructorId: race.constructorId });
+            print(`        Carrera: ${raceDetails.races[0].name}`);
+            print(`            Constructor: ${constructor.name}`);
+            print(`            Posición: ${race.position || 'DNF'}`);
+            print(`            Puntos: ${race.points}`);
+            print(`            Vuelta más rápida: ${race.fastestLapTime || 'N/A'}`);
+        });
+    });
+}
+
+getDriverInfo("Hamilton");
+```
+
+![Script 3](img/datagrip-script3.png)
